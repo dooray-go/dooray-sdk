@@ -6,7 +6,7 @@ import (
 
 type ParentInfo struct {
 	ID      string `json:"id"`      // 상위 업무 ID
-	Number  string `json:"number"`  // 상위 업무 번호
+	Number  int    `json:"number"`  // 상위 업무 번호
 	Subject string `json:"subject"` // 상위 업무 제목
 }
 
