@@ -27,6 +27,8 @@ $ go get -u github.com/dooray-go/dooray-sdk
 | **Calendar** | Get Calendars | `GetCalendars` | Retrieve list of calendars |
 | | Get Events | `GetEvents` | Retrieve events from calendars |
 | | Create Event | `CreateEvent` | Create a new calendar event |
+| | Update Event | `UpdateEvent` | Update an existing calendar event |
+| | Delete Event | `DeleteEvent` | Delete a calendar event |
 
 ## Messenger WebHook Example
 ```go
@@ -185,3 +187,75 @@ func main() {
     fmt.Printf("Post created successfully! ID: %s\n", response.Result.ID)
 }
 ```
+
+### Update a Calendar Event
+```go
+package main
+
+import (
+    "fmt"
+    "log"
+
+    "github.com/dooray-go/dooray-sdk/openapi/calendar"
+    model "github.com/dooray-go/dooray-sdk/openapi/model/calendar"
+)
+
+func main() {
+    calendarClient := calendar.NewDefaultCalendar()
+
+    // Only non-empty fields are updated; omit fields you want to leave unchanged.
+    subject := "Updated meeting"
+    location := "Meeting Room B"
+    response, err := calendarClient.UpdateEvent("your-dooray-api-key", "calendar-id", "event-id", model.UpdateEventRequest{
+        Subject:  &subject,
+        Location: &location,
+    })
+    if err != nil {
+        log.Fatalf("Failed to update event: %s", err)
+    }
+
+    fmt.Printf("Event updated: %v\n", response.Header.IsSuccessful)
+}
+```
+
+### Delete a Calendar Event
+```go
+package main
+
+import (
+    "fmt"
+    "log"
+
+    "github.com/dooray-go/dooray-sdk/openapi/calendar"
+    model "github.com/dooray-go/dooray-sdk/openapi/model/calendar"
+)
+
+func main() {
+    calendarClient := calendar.NewDefaultCalendar()
+
+    // Single event: deleteType defaults to "this"
+    response, err := calendarClient.DeleteEvent("your-dooray-api-key", "calendar-id", "event-id", model.DeleteEventRequest{})
+    if err != nil {
+        log.Fatalf("Failed to delete event: %s", err)
+    }
+    fmt.Printf("Event deleted: %v\n", response.Header.IsSuccessful)
+
+    // Recurring occurrence: use the id from GetEvents (may include a timestamp suffix)
+    // this / wholeFromThis / whole
+    _, err = calendarClient.DeleteEvent("your-dooray-api-key", "calendar-id", "event-id-20240228T013000Z", model.DeleteEventRequest{
+        DeleteType: model.DeleteTypeWholeFromThis,
+    })
+    if err != nil {
+        log.Fatalf("Failed to delete recurring event: %s", err)
+    }
+}
+```
+
+## Changelog
+
+### 2026-09-15 — feature/calendar-event-update-delete
+
+- Added `UpdateEvent` (`PUT /calendar/v1/calendars/{calendar-id}/events/{event-id}`). Only non-empty fields are sent, so omitted fields stay unchanged.
+- Added `DeleteEvent` (`POST /calendar/v1/calendars/{calendar-id}/events/{event-id}/delete`) with `deleteType`: `this`, `wholeFromThis`, `whole`. An empty type defaults to `this`.
+- Recurring occurrence IDs from `GetEvents` (timestamp suffix) are passed through as-is.
+- Release: v0.6.0
