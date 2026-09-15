@@ -30,7 +30,7 @@ var testResponse = `{
        "priority": "",
        "parent": {
            "id": "",
-           "number": "",
+           "number": 0,
            "subject": ""
        },
        "workflowClass": "working",
