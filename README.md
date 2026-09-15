@@ -23,6 +23,7 @@ $ go get -u github.com/dooray-go/dooray-sdk
 | **Project** | Get Projects | `GetProjects` | Retrieve list of projects |
 | | Get Posts | `GetPosts` | Retrieve posts from a project |
 | | Get Posts (Options) | `GetPostsWithOptions` | Retrieve posts with full query parameters (paging, filters, date, sort) |
+| | Get Post | `GetPost` | Retrieve a single post (task) by ID |
 | | Create Post | `CreatePost` | Create a new post in a project |
 | **Calendar** | Get Calendars | `GetCalendars` | Retrieve list of calendars |
 | | Get Events | `GetEvents` | Retrieve events from calendars |
@@ -188,6 +189,29 @@ func main() {
 }
 ```
 
+### Get a Project Post
+```go
+package main
+
+import (
+    "fmt"
+    "log"
+
+    "github.com/dooray-go/dooray-sdk/openapi/project"
+)
+
+func main() {
+    projectClient := project.NewDefaultProject()
+
+    response, err := projectClient.GetPost("your-dooray-api-key", "project-id", "post-id")
+    if err != nil {
+        log.Fatalf("Failed to get post: %s", err)
+    }
+
+    fmt.Printf("Post: %s\n%s\n", response.Result.Subject, response.Result.Body.Content)
+}
+```
+
 ### Update a Calendar Event
 ```go
 package main
@@ -252,6 +276,13 @@ func main() {
 ```
 
 ## Changelog
+
+### 2026-09-15 — feature/get-single-post
+
+- Added `GetPost` (`GET /project/v1/projects/{project-id}/posts/{post-id}`) for a single task, including `body` and `fileIdList`.
+- Subtask `parent.number` is parsed as `int`, matching the live API.
+- `users.from.member` accepts both `organizationMemberId` and the legacy `organizationmemberid` key.
+- Release: v0.7.0
 
 ### 2026-09-15 — feature/calendar-event-update-delete
 
