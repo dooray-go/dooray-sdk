@@ -1,6 +1,8 @@
 package project
 
 import (
+	"encoding/json"
+
 	"github.com/dooray-go/dooray-sdk/openapi/model"
 )
 
@@ -19,11 +21,34 @@ type TagInfo struct {
 	ID string `json:"id"` // 태그 ID
 }
 
+// OrganizationMember is a project member reference.
+// Dooray emits organizationMemberId; older docs used organizationmemberid.
+type OrganizationMember struct {
+	OrganizationMemberID string `json:"organizationMemberId"`
+	Name                 string `json:"name,omitempty"`
+}
+
+func (m *OrganizationMember) UnmarshalJSON(data []byte) error {
+	var raw struct {
+		OrganizationMemberID string `json:"organizationMemberId"`
+		LegacyID             string `json:"organizationmemberid"`
+		Name                 string `json:"name"`
+	}
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	m.Name = raw.Name
+	if raw.OrganizationMemberID != "" {
+		m.OrganizationMemberID = raw.OrganizationMemberID
+		return nil
+	}
+	m.OrganizationMemberID = raw.LegacyID
+	return nil
+}
+
 type UserFrom struct {
-	Type   string `json:"type"` // 생성자 타입 (member | emailuser)
-	Member struct {
-		OrganizationMemberID string `json:"organizationmemberid"` // 생성자 멤버 ID
-	} `json:"member"`
+	Type   string             `json:"type"` // 생성자 타입 (member | emailuser)
+	Member OrganizationMember `json:"member"`
 }
 
 type UserTo struct {
