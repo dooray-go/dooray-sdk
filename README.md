@@ -30,6 +30,28 @@ $ go get -u github.com/dooray-go/dooray-sdk
 | | Create Event | `CreateEvent` | Create a new calendar event |
 | | Update Event | `UpdateEvent` | Update an existing calendar event |
 | | Delete Event | `DeleteEvent` | Delete a calendar event |
+| **Wiki** | Get Wikis | `GetWikis` | List accessible wikis |
+| | Get Page | `GetPage` | Get a wiki page by page ID |
+| | Get Wiki Page | `GetWikiPage` | Get a page in a wiki |
+| | Get Pages | `GetPages` | List sibling pages (one depth) |
+| | Create Page | `CreatePage` | Create a wiki page |
+| | Update Page | `UpdatePage` | Update page title and body |
+| | Update Page Title | `UpdatePageTitle` | Update page title only |
+| | Update Page Content | `UpdatePageContent` | Update page body only |
+| | Update Page Referrers | `UpdatePageReferrers` | Replace page referrers |
+| | Move Page | `MovePage` | Move or reorder a page |
+| | Delete Page | `DeletePage` | Delete a wiki page |
+| | Create Comment | `CreateComment` | Add a page comment |
+| | Get Comments | `GetComments` | List page comments |
+| | Get Comment | `GetComment` | Get a comment |
+| | Update Comment | `UpdateComment` | Update a comment |
+| | Delete Comment | `DeleteComment` | Delete a comment |
+| | Get Shared Links | `GetSharedLinks` | List page shared links |
+| | Upload Page File | `UploadPageFile` | Upload an attachment or inline image |
+| | Download Page File | `DownloadPageFile` | Download a page file |
+| | Delete Page File | `DeletePageFile` | Delete a page file |
+| | Upload Wiki File | `UploadWikiFile` | Upload a wiki file |
+| | Download Attach File | `DownloadAttachFile` | Download by attachFileId |
 
 ## Messenger WebHook Example
 ```go
@@ -212,6 +234,34 @@ func main() {
 }
 ```
 
+### Get Wiki Pages
+```go
+package main
+
+import (
+    "fmt"
+    "log"
+
+    "github.com/dooray-go/dooray-sdk/openapi/wiki"
+)
+
+func main() {
+    wikiClient := wiki.NewDefaultWiki()
+
+    wikis, err := wikiClient.GetWikis("your-dooray-api-key")
+    if err != nil {
+        log.Fatalf("Failed to list wikis: %s", err)
+    }
+    fmt.Printf("wikis: %d\n", wikis.TotalCount)
+
+    page, err := wikiClient.GetPage("your-dooray-api-key", "page-id")
+    if err != nil {
+        log.Fatalf("Failed to get page: %s", err)
+    }
+    fmt.Printf("%s\n%s\n", page.Result.Subject, page.Result.Body.Content)
+}
+```
+
 ### Update a Calendar Event
 ```go
 package main
@@ -276,6 +326,14 @@ func main() {
 ```
 
 ## Changelog
+
+### 2026-09-16 — feature/wiki-api
+
+- Added Wiki SDK (`openapi/wiki`): list wikis, get/create/update/move/delete pages, comments, shared links, and file upload/download.
+- CreateComment accepts HTTP 201. File up/download keeps `Authorization` across 307 redirects to `file-api.dooray.com`.
+- Live-shaped httptest fixtures cover TEST wiki responses (`scope: private`, `parentPageId: null`, MovePage result object, upload `pageFileId`/`extension`).
+- Known live gap: GetComment may 404 for a newly created comment that still appears in GetComments.
+- Release: v0.8.0
 
 ### 2026-09-15 — feature/get-single-post
 
