@@ -18,8 +18,17 @@ $ go get -u github.com/dooray-go/dooray-sdk
 |----------|---------|--------|-------------|
 | **[Socket Mode](socketmode/README.md)** | Agent | `NewAgent` | Real-time event handling via WebSocket |
 | **Messenger** | Webhook | `PostWebhook` | Send messages via webhook |
-| | Direct Send | `DirectSend` | Send direct messages to users |
-| | Send Message | `SendMessage` | Send messages to a channel |
+| | Direct Send | `DirectSend` | Send a 1:1 message (`POST .../direct-send`) |
+| | Get Channels | `GetChannels` | List joined channels |
+| | Create Channel | `CreateChannel` | Create a direct or private channel |
+| | Join Channel | `JoinChannelMembers` | Add members to a channel |
+| | Leave Channel | `LeaveChannelMembers` | Remove members from a channel |
+| | Send Message | `SendMessage` | Send a channel message (`POST .../logs`) |
+| | Update Channel Log | `UpdateChannelLog` | Edit a channel message |
+| | Delete Channel Log | `DeleteChannelLog` | Delete a channel message |
+| | Reply Channel Log | `ReplyChannelLog` | Reply to a channel message |
+| | Create And Send Thread | `CreateAndSendThread` | Create a thread and send |
+| | Create Thread From Log | `CreateAndSendThreadFromLog` | Create a thread from an existing log |
 | **Project** | Get Projects | `GetProjects` | Retrieve list of projects |
 | | Get Posts | `GetPosts` | Retrieve posts from a project |
 | | Get Posts (Options) | `GetPostsWithOptions` | Retrieve posts with full query parameters (paging, filters, date, sort) |
@@ -327,24 +336,4 @@ func main() {
 
 ## Changelog
 
-### 2026-09-16 — feature/wiki-api
-
-- Added Wiki SDK (`openapi/wiki`): list wikis, get/create/update/move/delete pages, comments, shared links, and file upload/download.
-- CreateComment accepts HTTP 201. File up/download keeps `Authorization` across 307 redirects to `file-api.dooray.com`.
-- Live-shaped httptest fixtures cover TEST wiki responses (`scope: private`, `parentPageId: null`, MovePage result object, upload `pageFileId`/`extension`).
-- Known live gap: GetComment may 404 for a newly created comment that still appears in GetComments.
-- Release: v0.8.0
-
-### 2026-09-15 — feature/get-single-post
-
-- Added `GetPost` (`GET /project/v1/projects/{project-id}/posts/{post-id}`) for a single task, including `body` and `fileIdList`.
-- Subtask `parent.number` is parsed as `int`, matching the live API.
-- `users.from.member` accepts both `organizationMemberId` and the legacy `organizationmemberid` key.
-- Release: v0.7.0
-
-### 2026-09-15 — feature/calendar-event-update-delete
-
-- Added `UpdateEvent` (`PUT /calendar/v1/calendars/{calendar-id}/events/{event-id}`). Only non-empty fields are sent, so omitted fields stay unchanged.
-- Added `DeleteEvent` (`POST /calendar/v1/calendars/{calendar-id}/events/{event-id}/delete`) with `deleteType`: `this`, `wholeFromThis`, `whole`. An empty type defaults to `this`.
-- Recurring occurrence IDs from `GetEvents` (timestamp suffix) are passed through as-is.
-- Release: v0.6.0
+See [CHANGELOG.md](CHANGELOG.md) for release history.
