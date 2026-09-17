@@ -3,7 +3,8 @@ package messenger
 import "github.com/dooray-go/dooray-sdk/openapi/model"
 
 type SendMessageResult struct {
-	ID string `json:"id"`
+	ID        string `json:"id"`
+	ChannelID string `json:"channelId"`
 }
 
 type SendMessageResponse struct {

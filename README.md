@@ -18,8 +18,17 @@ $ go get -u github.com/dooray-go/dooray-sdk
 |----------|---------|--------|-------------|
 | **[Socket Mode](socketmode/README.md)** | Agent | `NewAgent` | Real-time event handling via WebSocket |
 | **Messenger** | Webhook | `PostWebhook` | Send messages via webhook |
-| | Direct Send | `DirectSend` | Send direct messages to users |
-| | Send Message | `SendMessage` | Send messages to a channel |
+| | Direct Send | `DirectSend` | Send a 1:1 message (`POST .../direct-send`) |
+| | Get Channels | `GetChannels` | List joined channels |
+| | Create Channel | `CreateChannel` | Create a direct or private channel |
+| | Join Channel | `JoinChannelMembers` | Add members to a channel |
+| | Leave Channel | `LeaveChannelMembers` | Remove members from a channel |
+| | Send Message | `SendMessage` | Send a channel message (`POST .../logs`) |
+| | Update Channel Log | `UpdateChannelLog` | Edit a channel message |
+| | Delete Channel Log | `DeleteChannelLog` | Delete a channel message |
+| | Reply Channel Log | `ReplyChannelLog` | Reply to a channel message |
+| | Create And Send Thread | `CreateAndSendThread` | Create a thread and send |
+| | Create Thread From Log | `CreateAndSendThreadFromLog` | Create a thread from an existing log |
 | **Project** | Get Projects | `GetProjects` | Retrieve list of projects |
 | | Get Posts | `GetPosts` | Retrieve posts from a project |
 | | Get Posts (Options) | `GetPostsWithOptions` | Retrieve posts with full query parameters (paging, filters, date, sort) |
@@ -326,6 +335,13 @@ func main() {
 ```
 
 ## Changelog
+
+### 2026-09-17 — feature/messenger-channels
+
+- Added channel listing and creation, member join/leave, message update/delete/reply, and thread creation APIs to the Messenger SDK.
+- Unified channel message requests through the context-aware JSON helper and exposed `channelId` in message-send responses.
+- Added httptest coverage for every new endpoint and verified the message lifecycle against `api.dooray.com` on `manty.dooray.com`.
+- Release: v0.9.0
 
 ### 2026-09-16 — feature/wiki-api
 
