@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased — 2026-09-19
+
+Branch: `feature/account-member-me`
+
+- Added Account `GetMe` support for `GET /common/v1/members/me`, including context-aware and custom HTTP client variants.
+- Added httptest coverage for authentication headers, response decoding, raw JSON retention, HTTP 401/500 responses, and malformed JSON.
+- Documented all Account APIs and completed the README feature table against the implemented OpenAPI surface.
+
 ## v0.9.0 — 2026-09-17
 
 Branch: `feature/messenger-channels`

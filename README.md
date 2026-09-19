@@ -17,7 +17,10 @@ $ go get -u github.com/dooray-go/dooray-sdk
 | Category | Feature | Method | Description |
 |----------|---------|--------|-------------|
 | **[Socket Mode](socketmode/README.md)** | Agent | `NewAgent` | Real-time event handling via WebSocket |
-| **Messenger** | Webhook | `PostWebhook` | Send messages via webhook |
+| **Account** | Get Current Member | `GetMe` | Retrieve the member associated with a personal authentication token |
+| | Get Member | `GetMember` | Retrieve a member by ID |
+| | Get Members | `GetMembers` | Retrieve members filtered by name or user code |
+| **Messenger** | Webhook | `hook.PostWebhook` | Send messages via webhook |
 | | Direct Send | `DirectSend` | Send a 1:1 message (`POST .../direct-send`) |
 | | Get Channels | `GetChannels` | List joined channels |
 | | Create Channel | `CreateChannel` | Create a direct or private channel |
@@ -40,6 +43,7 @@ $ go get -u github.com/dooray-go/dooray-sdk
 | | Update Event | `UpdateEvent` | Update an existing calendar event |
 | | Delete Event | `DeleteEvent` | Delete a calendar event |
 | **Wiki** | Get Wikis | `GetWikis` | List accessible wikis |
+| | Get Wikis (Options) | `GetWikisWithOptions` | List accessible wikis with paging parameters |
 | | Get Page | `GetPage` | Get a wiki page by page ID |
 | | Get Wiki Page | `GetWikiPage` | Get a page in a wiki |
 | | Get Pages | `GetPages` | List sibling pages (one depth) |
@@ -88,6 +92,30 @@ func main() {
 ```
 
 ## OpenApi Examples
+
+### Get the Current Account Member
+```go
+package main
+
+import (
+    "fmt"
+    "log"
+
+    "github.com/dooray-go/dooray-sdk/openapi/account"
+)
+
+func main() {
+    accountClient := account.NewDefaultAccount()
+
+    response, err := accountClient.GetMe("your-dooray-api-key")
+    if err != nil {
+        log.Fatalf("Failed to get current member: %s", err)
+    }
+
+    fmt.Printf("Member: %s (%s)\n", response.Result.Name, response.Result.ID)
+    fmt.Printf("Default organization: %s\n", response.Result.DefaultOrganization.ID)
+}
+```
 
 ### Get Posts from a Project
 ```go
